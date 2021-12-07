@@ -48,6 +48,7 @@ from ..linkers import (
     VisualStudioLinker,
     VisualStudioLikeLinkerMixin,
     WASMDynamicLinker,
+    SharcLinker
 )
 from .compilers import Compiler
 from .c import (
@@ -412,7 +413,7 @@ def _detect_c_or_cpp_compiler(env: 'Environment', lang: str, for_machine: Machin
             popen_exceptions[' '.join(compiler + [arg])] = e
             continue
 
-        if 'ccrx' in compiler_name:
+        if 'ccrx' or 'cc21k' in compiler_name:
             out = err
 
         full_version = out.split('\n', 1)[0]
