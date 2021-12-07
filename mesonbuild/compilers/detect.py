@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mesonbuild.linkers.linkers import SharcDynamicLinker
+from mesonbuild.compilers.mixins.sharc import SharcCompiler
 from ..mesonlib import (
     MachineChoice, MesonException, EnvironmentException,
     search_version, is_windows, Popen_safe, windows_proof_rm,
@@ -48,7 +48,7 @@ from ..linkers import (
     VisualStudioLinker,
     VisualStudioLikeLinkerMixin,
     WASMDynamicLinker,
-    SharcLinker
+    SharcLinker,
 )
 from .compilers import Compiler
 from .c import (
@@ -291,6 +291,8 @@ def detect_static_linker(env: 'Environment', compiler: Compiler) -> StaticLinker
             linkers = [['xilib']]
         elif isinstance(compiler, (PGICCompiler, PGIFortranCompiler)) and is_windows():
             linkers = [['ar']]  # For PGI on Windows, "ar" is just a wrapper calling link/lib.
+        elif isinstance(compiler, SharcCompiler):
+            linkers = [['cc21k']]
         else:
             linkers = default_linkers
     popen_exceptions = {}
@@ -632,7 +634,7 @@ def _detect_c_or_cpp_compiler(env: 'Environment', lang: str, for_machine: Machin
         if 'SHARC' in out:
             cls = SharcCCompiler
             env.coredata.add_lang_args(cls.language, cls, for_machine, env)
-            linker = SharcDynamicLinker(compiler, for_machine, version=version)
+            linker = SharcLinker(compiler, for_machine, version=version)
             return cls(
                 ccache + compiler, version, for_machine, is_cross, info,
                 exe_wrap, full_version=full_version, linker=linker)
