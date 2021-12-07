@@ -55,6 +55,7 @@ from .linkers import (
     PGIDynamicLinker,
     NvidiaHPC_DynamicLinker,
     NAGDynamicLinker,
+    SharcDynamicLinker,
 
     VisualStudioLikeLinkerMixin,
     MSVCDynamicLinker,
@@ -114,6 +115,7 @@ __all__ = [
     'PGIDynamicLinker',
     'NvidiaHPC_DynamicLinker',
     'NAGDynamicLinker',
+    'SharcDynamicLinker',
 
     'VisualStudioLikeLinkerMixin',
     'MSVCDynamicLinker',
