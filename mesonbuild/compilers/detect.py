@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from mesonbuild.linkers.linkers import SharcDynamicLinker
 from ..mesonlib import (
     MachineChoice, MesonException, EnvironmentException,
     search_version, is_windows, Popen_safe, windows_proof_rm,
@@ -68,6 +69,7 @@ from .c import (
     CompCertCCompiler,
     C2000CCompiler,
     VisualStudioCCompiler,
+    SharcCCompiler,
 )
 from .cpp import (
     CPPCompiler,
@@ -399,6 +401,8 @@ def _detect_c_or_cpp_compiler(env: 'Environment', lang: str, for_machine: Machin
         elif compiler_name in {'icl', 'icl.exe'}:
             # if you pass anything to icl you get stuck in a pager
             arg = ''
+        elif 'cc21k' in compiler_name:
+            arg = '-v'
         else:
             arg = '--version'
 
@@ -620,6 +624,14 @@ def _detect_c_or_cpp_compiler(env: 'Environment', lang: str, for_machine: Machin
             cls = C2000CCompiler if lang == 'c' else C2000CPPCompiler
             env.coredata.add_lang_args(cls.language, cls, for_machine, env)
             linker = C2000DynamicLinker(compiler, for_machine, version=version)
+            return cls(
+                ccache + compiler, version, for_machine, is_cross, info,
+                exe_wrap, full_version=full_version, linker=linker)
+
+        if 'SHARC' in out:
+            cls = SharcCCompiler
+            env.coredata.add_lang_args(cls.language, cls, for_machine, env)
+            linker = SharcDynamicLinker(compiler, for_machine, version=version)
             return cls(
                 ccache + compiler, version, for_machine, is_cross, info,
                 exe_wrap, full_version=full_version, linker=linker)

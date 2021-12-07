@@ -32,6 +32,7 @@ from .mixins.clang import ClangCompiler
 from .mixins.elbrus import ElbrusCompiler
 from .mixins.pgi import PGICompiler
 from .mixins.emscripten import EmscriptenMixin
+from .mixins.sharc import SharcCompiler
 from .compilers import (
     gnu_winlibs,
     msvc_winlibs,
@@ -719,3 +720,28 @@ class C2000CCompiler(C2000Compiler, CCompiler):
         if path == '':
             path = '.'
         return ['--include_path=' + path]
+
+class SharcCCompiler(SharcCompiler, CCompiler):
+    def __init__(self, exelist: T.List[str], version: str, for_machine: MachineChoice,
+                 is_cross: bool, info: 'MachineInfo',
+                 exe_wrapper: T.Optional['ExternalProgram'] = None,
+                 linker: T.Optional['DynamicLinker'] = None,
+                 full_version: T.Optional[str] = None):
+        CCompiler.__init__(self, exelist, version, for_machine, is_cross,
+                           info, exe_wrapper, linker=linker,
+                           full_version=full_version)
+        SharcCompiler.__init__(self)
+
+    def get_options(self) -> 'KeyedOptionDictType':
+        opts = CCompiler.get_options(self)
+        key = OptionKey('std', machine=self.for_machine, lang=self.language)
+        opts[key].choices = ['none', 'c89', 'c99', 'c11']
+        return opts
+
+    def get_option_compile_args(self, options: 'KeyedOptionDictType') -> T.List[str]:
+        args = []
+        key = OptionKey('std', machine=self.for_machine, lang=self.language)
+        std = options[key]
+        if std.value != 'none':
+            args.append('--' + std.value)
+        return args

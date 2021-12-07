@@ -1465,3 +1465,23 @@ class CudaLinker(PosixDynamicLinkerMixin, DynamicLinker):
     def get_soname_args(self, env: 'Environment', prefix: str, shlib_name: str,
                         suffix: str, soversion: str, darwin_versions: T.Tuple[str, str]) -> T.List[str]:
         return []
+
+class SharcDynamicLinker(DynamicLinker):
+
+    """Linker for the SHARC compiler."""
+
+    id = 'sharclink'
+
+    def __init__(self, for_machine: mesonlib.MachineChoice,
+                 *, version: str = 'unknown version'):
+        super().__init__(['sharclink'], for_machine, '', [],
+                         version=version)
+
+    def get_accepts_rsp(self) -> bool:
+        return False
+
+    def get_std_shared_lib_args(self) -> 'T.NoReturn':
+        raise MesonException('The Sharc Linkers do not support shared libraries')
+
+    def get_allow_undefined_args(self) -> T.List[str]:
+        return []
