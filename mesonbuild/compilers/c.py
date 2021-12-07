@@ -735,7 +735,7 @@ class SharcCCompiler(SharcCompiler, CCompiler):
     def get_options(self) -> 'KeyedOptionDictType':
         opts = CCompiler.get_options(self)
         key = OptionKey('std', machine=self.for_machine, lang=self.language)
-        opts[key].choices = ['none', 'c89', 'c99', 'c11']
+        opts[key].choices = ['none', 'c90', 'c99', 'c11', 'gnu90', 'gnu99', 'gnu11']
         return opts
 
     def get_option_compile_args(self, options: 'KeyedOptionDictType') -> T.List[str]:

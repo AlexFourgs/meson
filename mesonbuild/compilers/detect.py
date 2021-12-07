@@ -635,7 +635,7 @@ def _detect_c_or_cpp_compiler(env: 'Environment', lang: str, for_machine: Machin
         if 'SHARC' in out:
             cls = SharcCCompiler
             env.coredata.add_lang_args(cls.language, cls, for_machine, env)
-            linker = SharcDynamicLinker(compiler, for_machine, version=version)
+            linker = SharcDynamicLinker(for_machine, version=version)
             return cls(
                 ccache + compiler, version, for_machine, is_cross, info,
                 exe_wrap, full_version=full_version, linker=linker)
