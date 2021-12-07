@@ -34,6 +34,7 @@ from .linkers import (
     AIXArLinker,
     PGIStaticLinker,
     NvidiaHPC_StaticLinker,
+    SharcLinker,
 
     DynamicLinker,
     PosixDynamicLinkerMixin,
@@ -92,6 +93,7 @@ __all__ = [
     'AIXArLinker',
     'PGIStaticLinker',
     'NvidiaHPC_StaticLinker',
+    'SharcLinker',
 
     'DynamicLinker',
     'PosixDynamicLinkerMixin',
